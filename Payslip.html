@@ -86,7 +86,8 @@
       font-size: 14px;
     }
 
-    .content{ padding: 14px 14px 84px; }
+    /* NOTE: toolbar removed, so no extra bottom padding needed */
+    .content{ padding: 14px 14px 18px; }
     .card{
       background: var(--card);
       border-radius: var(--radius);
@@ -370,7 +371,7 @@
       position:absolute;
       left: 50%;
       transform: translateX(-50%);
-      bottom: 84px;
+      bottom: 18px;
       background: rgba(17,24,39,.92);
       color:#fff;
       padding: 10px 12px;
@@ -385,46 +386,6 @@
 
     /* hidden amounts */
     .masked{ filter: blur(10px); user-select:none; }
-
-    /* bottom nav */
-    .bottom-nav{
-      position:absolute;
-      left:0; right:0; bottom:0;
-      height: 72px;
-      background: #fff;
-      border-top: 1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-around;
-      padding: 8px 10px 10px;
-      z-index: 10;
-    }
-    .nav-item{
-      width: 20%;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:6px;
-      color:#6b7280;
-      font-weight: 750;
-      font-size: 11px;
-      cursor:pointer;
-      user-select:none;
-    }
-    .nav-item .ni{
-      width: 28px; height: 28px;
-      border-radius: 12px;
-      display:flex;
-      align-items:center; justify-content:center;
-      background: #f3f4f6;
-      border: 1px solid var(--line);
-      font-size: 14px;
-    }
-    .nav-item.active{ color: var(--brand); }
-    .nav-item.active .ni{
-      background: rgba(22,119,255,.10);
-      border-color: rgba(22,119,255,.35);
-    }
 
     /* other views */
     .mini-note{ color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.35; }
@@ -452,7 +413,9 @@
             <div class="eye" id="eyeIcon">👁️</div>
             <div>
               <div class="hint" id="hideLabel">Tap to hide</div>
-              <div class="mini-note">Walgreens Store Associate • Store #008</div>
+              <div class="mini-note">
+                Walgreens Store Associate (CSA) • Store #008 • 80 hrs / pay period
+              </div>
             </div>
           </div>
 
@@ -547,25 +510,6 @@
         </div>
       </div>
 
-      <!-- Bottom nav -->
-      <div class="bottom-nav">
-        <div class="nav-item" id="navHome" onclick="navTo('home')">
-          <div class="ni">⌂</div><div>Home</div>
-        </div>
-        <div class="nav-item" id="navPeople" onclick="navTo('people')">
-          <div class="ni">👥</div><div>People</div>
-        </div>
-        <div class="nav-item" id="navYou" onclick="navTo('you')">
-          <div class="ni">🙂</div><div>You</div>
-        </div>
-        <div class="nav-item active" id="navPayslips" onclick="navTo('payslips')">
-          <div class="ni">🧾</div><div>Payslips</div>
-        </div>
-        <div class="nav-item" id="navMenu" onclick="navTo('menu')">
-          <div class="ni">≡</div><div>Menu</div>
-        </div>
-      </div>
-
       <!-- Sheet: Payslip details (NO actual payslip content shown) -->
       <div class="sheet-backdrop" id="sheetPayslip">
         <div class="sheet">
@@ -605,7 +549,7 @@
             </div>
 
             <div class="mini-note" style="margin-top:10px;">
-              This mirrors a common SuccessFactors pattern: view summary for the most recent pay statement and navigate pay history for prior periods. [web:86]
+              SuccessFactors mobile flows commonly show a summary first, then open the pay statement PDF and pay history from there. [web:101]
             </div>
           </div>
         </div>
@@ -656,30 +600,31 @@
   // USD formatting
   const USD = new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" });
 
-  // Walgreens Store Associate, US biweekly examples (simulated values)
+  // Store associate scenario: 80 hours / pay period (biweekly) at $17.50/hr
+  // Gross base: 80 * 17.50 = 1400.00, plus small OT/bonus variation to make periods realistic.
   const months = [
-    { key:"2026-01", label:"Jan 2026", net: 1286.42, gross: 1600.00, ded: 313.58 },
-    { key:"2025-12", label:"Dec 2025", net: 1228.15, gross: 1520.00, ded: 291.85 },
-    { key:"2025-11", label:"Nov 2025", net: 1314.66, gross: 1664.00, ded: 349.34 },
-    { key:"2025-10", label:"Oct 2025", net: 1196.90, gross: 1488.00, ded: 291.10 }
+    { key:"2026-01", label:"Jan 2026", net: 1118.42, gross: 1450.00, ded: 331.58 },
+    { key:"2025-12", label:"Dec 2025", net: 1088.15, gross: 1400.00, ded: 311.85 },
+    { key:"2025-11", label:"Nov 2025", net: 1164.66, gross: 1495.00, ded: 330.34 },
+    { key:"2025-10", label:"Oct 2025", net: 1056.90, gross: 1380.00, ded: 323.10 }
   ];
 
   const payslipsByMonth = {
     "2026-01": [
-      { id:"ps-2026-01-24", date:"01/24/2026", type:"Pay statement", net: 642.21, gross: 800.00, ded: 157.79, payDate:"Jan 24, 2026", status:"Final" },
-      { id:"ps-2026-01-10", date:"01/10/2026", type:"Pay statement", net: 644.21, gross: 800.00, ded: 155.79, payDate:"Jan 10, 2026", status:"Final" }
+      { id:"ps-2026-01-24", date:"01/24/2026", type:"Pay statement", net: 565.21, gross: 725.00, ded: 159.79, payDate:"Jan 24, 2026", status:"Final" },
+      { id:"ps-2026-01-10", date:"01/10/2026", type:"Pay statement", net: 553.21, gross: 725.00, ded: 171.79, payDate:"Jan 10, 2026", status:"Final" }
     ],
     "2025-12": [
-      { id:"ps-2025-12-27", date:"12/27/2025", type:"Pay statement", net: 614.07, gross: 760.00, ded: 145.93, payDate:"Dec 27, 2025", status:"Final" },
-      { id:"ps-2025-12-13", date:"12/13/2025", type:"Pay statement", net: 614.08, gross: 760.00, ded: 145.92, payDate:"Dec 13, 2025", status:"Final" }
+      { id:"ps-2025-12-27", date:"12/27/2025", type:"Pay statement", net: 542.07, gross: 700.00, ded: 157.93, payDate:"Dec 27, 2025", status:"Final" },
+      { id:"ps-2025-12-13", date:"12/13/2025", type:"Pay statement", net: 546.08, gross: 700.00, ded: 153.92, payDate:"Dec 13, 2025", status:"Final" }
     ],
     "2025-11": [
-      { id:"ps-2025-11-29", date:"11/29/2025", type:"Pay statement", net: 657.33, gross: 832.00, ded: 174.67, payDate:"Nov 29, 2025", status:"Final" },
-      { id:"ps-2025-11-15", date:"11/15/2025", type:"Pay statement", net: 657.33, gross: 832.00, ded: 174.67, payDate:"Nov 15, 2025", status:"Final" }
+      { id:"ps-2025-11-29", date:"11/29/2025", type:"Pay statement", net: 582.33, gross: 747.50, ded: 165.17, payDate:"Nov 29, 2025", status:"Final" },
+      { id:"ps-2025-11-15", date:"11/15/2025", type:"Pay statement", net: 582.33, gross: 747.50, ded: 165.17, payDate:"Nov 15, 2025", status:"Final" }
     ],
     "2025-10": [
-      { id:"ps-2025-10-18", date:"10/18/2025", type:"Pay statement", net: 598.45, gross: 744.00, ded: 145.55, payDate:"Oct 18, 2025", status:"Final" },
-      { id:"ps-2025-10-04", date:"10/04/2025", type:"Pay statement", net: 598.45, gross: 744.00, ded: 145.55, payDate:"Oct 4, 2025", status:"Final" }
+      { id:"ps-2025-10-18", date:"10/18/2025", type:"Pay statement", net: 528.45, gross: 690.00, ded: 161.55, payDate:"Oct 18, 2025", status:"Final" },
+      { id:"ps-2025-10-04", date:"10/04/2025", type:"Pay statement", net: 528.45, gross: 690.00, ded: 161.55, payDate:"Oct 04, 2025", status:"Final" }
     ]
   };
 
@@ -770,39 +715,13 @@
     showToast(state.hideAmounts ? "Amounts hidden" : "Amounts shown");
   }
 
-  // bottom nav
-  function navTo(tab){
-    ["Home","People","You","Payslips","Menu"].forEach(id=>{
-      document.getElementById("nav"+id).classList.remove("active");
-    });
-    ["viewPayslips","viewSim","viewMenu"].forEach(v=>{
-      document.getElementById(v).style.display = "none";
-    });
-
-    if(tab==="payslips"){
-      document.getElementById("navPayslips").classList.add("active");
-      document.getElementById("viewPayslips").style.display = "block";
-      return;
-    }
-    if(tab==="menu"){
-      document.getElementById("navMenu").classList.add("active");
-      document.getElementById("viewMenu").style.display = "block";
-      return;
-    }
-    if(tab==="home"){
-      // keep user on payslips for this widget; show toast
-      document.getElementById("navPayslips").classList.add("active");
-      document.getElementById("viewPayslips").style.display = "block";
-      showToast("Home (embedded)");
-      return;
-    }
-    // placeholders
-    document.getElementById("navPayslips").classList.add("active");
-    document.getElementById("viewPayslips").style.display = "block";
-    showToast("Not available in this widget");
+  // Navigation (toolbar removed): simple menu open/close
+  function openMenu(){
+    document.getElementById("viewPayslips").style.display = "none";
+    document.getElementById("viewSim").style.display = "none";
+    document.getElementById("viewMenu").style.display = "block";
   }
 
-  function openMenu(){ navTo("menu"); }
   function openHelp(){
     showToast("Help");
     openSupport();
@@ -836,12 +755,8 @@
     showToast("Downloading pay statement…");
     setTimeout(()=>showToast("Downloaded"), 900);
   }
-  function sharePdf(){
-    showToast("Share sheet opened");
-  }
-  function emailPdf(){
-    showToast("Email sent");
-  }
+  function sharePdf(){ showToast("Share sheet opened"); }
+  function emailPdf(){ showToast("Email sent"); }
 
   function raiseCase(){
     closeSheet("sheetPayslip");
@@ -852,7 +767,7 @@
       "Requesting help with my pay statement.",
       "Pay period: " + monthLabel + (p ? (" • Pay date: " + p.payDate) : ""),
       "Issue details:"
-    ].join("\n");
+    ].join("\\n");
     document.getElementById("caseDesc").value = seed;
   }
 
@@ -861,8 +776,6 @@
     document.getElementById("viewPayslips").style.display = "none";
     document.getElementById("viewMenu").style.display = "none";
     document.getElementById("viewSim").style.display = "block";
-    ["Home","People","You","Payslips","Menu"].forEach(id=>document.getElementById("nav"+id).classList.remove("active"));
-    document.getElementById("navMenu").classList.add("active");
   }
   function openTaxDocs(){ showToast("Tax documents"); }
   function openSupport(){ openSheet("sheetCase"); }
@@ -876,13 +789,13 @@
     const pct = Number(document.getElementById("simPension").value || 0);
 
     // assumptions for click-through realism (not payroll-accurate)
-    const otRate = 24;                    // $/hour
+    const otRate = 26.25;                 // $/hour (time-and-a-half off $17.50)
     const addGross = (ot * otRate) + bonus;
     const estGross = base.gross + addGross;
 
     const est401k = estGross * (pct/100);
-    const estTaxes = (estGross - est401k) * 0.14;  // simplified withholding
-    const estOther = 52;                            // benefits etc.
+    const estTaxes = (estGross - est401k) * 0.145; // simplified withholding
+    const estOther = 45;                            // benefits/insurance etc.
     const estDed = Math.max(0, estTaxes + est401k + estOther);
     const estNet = Math.max(0, estGross - estDed);
 
@@ -912,9 +825,9 @@
 
   function openCaseFromSim(){
     openSupport();
-    document.getElementById("caseCat").value = "Tax withholding question";
+    document.getElementById("caseCat").value = "Missing overtime";
     document.getElementById("caseDesc").value =
-      "I ran a pay simulation and have a question about deductions/withholding.\n\nPlease review my latest pay statement and confirm what will change.";
+      "I ran a pay simulation and have a question about overtime pay calculation.\\n\\nPlease review my latest pay statement and confirm the overtime amount.";
   }
 
   function attachMock(){ showToast("Attachment added"); }
@@ -931,6 +844,7 @@
     el.addEventListener("click", (e)=>{ if(e.target === el) closeSheet(id); });
   });
 
+  // init
   renderAll();
 </script>
 </body>
