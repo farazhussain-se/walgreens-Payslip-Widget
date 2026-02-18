@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>Embedded SuccessFactors Payroll Widget (Demo)</title>
+  <title>Payslips (Embedded) - Walgreens</title>
   <style>
     :root{
       --brand:#1677ff;
@@ -13,24 +13,23 @@
       --text:#111827;
       --muted:#6b7280;
       --line:#e5e7eb;
-      --good:#1f7a3f;
+      --good:#146c2e;
       --chip:#eef2ff;
       --danger:#b42318;
       --shadow:0 10px 30px rgba(0,0,0,.10);
       --radius:16px;
-      --radius-sm:12px;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     }
     *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       background: linear-gradient(#e9eef7, #f7f7f9);
       color:var(--text);
       padding: 18px 10px;
     }
 
-    /* "Embedded widget" frame */
+    /* embedded widget frame */
     .widget-shell{
       width: 380px;
       max-width: 96vw;
@@ -67,14 +66,14 @@
       padding: 0 14px;
       color:#fff;
       opacity: .95;
-      font-weight: 600;
+      font-weight: 700;
       cursor:pointer;
       user-select:none;
     }
     .topbar .left{ left:0; }
     .topbar .right{ right:0; }
     .topbar-title{
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: .2px;
     }
     .icon{
@@ -87,26 +86,17 @@
       font-size: 14px;
     }
 
-    /* content */
-    .content{
-      padding: 14px 14px 84px;
-    }
-
+    .content{ padding: 14px 14px 84px; }
     .card{
       background: var(--card);
       border-radius: var(--radius);
       border: 1px solid var(--line);
       box-shadow: 0 2px 10px rgba(0,0,0,.04);
     }
-
-    .row{ display:flex; gap:12px; }
-    .row > *{ flex:1; }
-
-    .p12{ padding:12px; }
     .p14{ padding:14px; }
     .p16{ padding:16px; }
 
-    /* hide */
+    /* hide toggle */
     .hide-toggle{
       display:flex;
       align-items:center;
@@ -127,7 +117,7 @@
     }
     .hide-toggle .hint{
       color: #1f2937;
-      font-weight: 650;
+      font-weight: 750;
     }
 
     /* month chips */
@@ -148,7 +138,7 @@
       white-space: nowrap;
       cursor:pointer;
       user-select:none;
-      font-weight: 650;
+      font-weight: 750;
       font-size: 13px;
     }
     .chip.active{
@@ -165,13 +155,13 @@
     }
     .summary .label{
       color: var(--muted);
-      font-weight: 650;
+      font-weight: 750;
       font-size: 13px;
       text-align:center;
     }
     .summary .net{
       font-size: 34px;
-      font-weight: 800;
+      font-weight: 900;
       text-align:center;
       margin-top: 6px;
       color: var(--good);
@@ -187,16 +177,14 @@
       padding: 12px 10px;
       text-align:center;
     }
-    .summary .subcell + .subcell{
-      border-left: 1px solid var(--line);
-    }
+    .summary .subcell + .subcell{ border-left: 1px solid var(--line); }
     .summary .subcell .k{
       color: var(--muted);
       font-size: 12px;
-      font-weight: 650;
+      font-weight: 750;
     }
     .summary .subcell .v{
-      font-weight: 800;
+      font-weight: 900;
       margin-top: 6px;
       font-family: var(--mono);
     }
@@ -207,10 +195,8 @@
       letter-spacing:.2px;
     }
 
-    /* payslip list */
-    .list{
-      padding: 8px;
-    }
+    /* list */
+    .list{ padding: 8px; }
     .item{
       display:flex;
       align-items:center;
@@ -222,10 +208,6 @@
       border: 1px solid transparent;
     }
     .item:active{ background:#f8fafc; }
-    .item + .item{
-      border-top: 1px solid var(--line);
-      border-radius: 0;
-    }
     .doc{
       width: 34px; height: 34px;
       border-radius: 12px;
@@ -235,12 +217,13 @@
       color:#9a3412;
       font-weight:900;
       flex: 0 0 auto;
+      font-size: 12px;
     }
     .meta{ flex:1; }
-    .meta .date{ font-weight: 750; }
+    .meta .date{ font-weight: 850; }
     .meta .type{ color: var(--muted); font-size: 12px; margin-top:2px; }
     .amt{
-      font-weight: 900;
+      font-weight: 950;
       color: var(--good);
       font-family: var(--mono);
     }
@@ -253,8 +236,9 @@
       border: 1px solid var(--line);
       flex: 0 0 auto;
     }
+    .sep{ height:1px; background: var(--line); margin:0 8px; }
 
-    /* modal/sheets */
+    /* sheets */
     .sheet-backdrop{
       position:absolute;
       left:0; top:0; right:0; bottom:0;
@@ -283,14 +267,11 @@
       border-bottom: 1px solid var(--line);
       background: #f8fafc;
     }
-    .sheet-title{
-      font-weight: 850;
-      letter-spacing:.2px;
-    }
+    .sheet-title{ font-weight: 950; letter-spacing:.2px; }
     .sheet-close{
       cursor:pointer;
       user-select:none;
-      font-weight: 850;
+      font-weight: 950;
       color: #334155;
       padding: 8px 10px;
       border-radius: 12px;
@@ -310,7 +291,7 @@
       border-radius: 14px;
       border: 1px solid var(--line);
       background: #fff;
-      font-weight: 750;
+      font-weight: 850;
       font-size: 12px;
       color: #334155;
     }
@@ -324,8 +305,8 @@
       font-size: 14px;
     }
     .kv:last-child{ border-bottom:none; }
-    .kv .k{ color: var(--muted); font-weight: 650; }
-    .kv .v{ font-weight: 850; font-family: var(--mono); }
+    .kv .k{ color: var(--muted); font-weight: 750; }
+    .kv .v{ font-weight: 950; font-family: var(--mono); }
 
     .actions{
       display:grid;
@@ -338,7 +319,7 @@
       background: #fff;
       padding: 12px 10px;
       border-radius: 14px;
-      font-weight: 800;
+      font-weight: 950;
       cursor:pointer;
       user-select:none;
       text-align:center;
@@ -359,16 +340,51 @@
       color: var(--danger);
     }
 
-    .hintbox{
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-      padding: 12px;
-      border-radius: 14px;
-      color: #334155;
-      font-size: 13px;
-      line-height: 1.35;
+    /* secure preview */
+    .secure-preview{
       margin-top: 12px;
+      border-radius: 16px;
+      border: 1px dashed #cbd5e1;
+      background: #f8fafc;
+      padding: 14px;
     }
+    .secure-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+    }
+    .secure-title{ font-weight: 950; }
+    .secure-note{ color: var(--muted); font-size: 13px; margin-top:8px; line-height: 1.35; }
+    .lock{
+      width:34px; height:34px;
+      border-radius: 14px;
+      background:#fff;
+      border:1px solid var(--line);
+      display:flex; align-items:center; justify-content:center;
+      font-weight: 950;
+    }
+
+    /* toast */
+    .toast{
+      position:absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 84px;
+      background: rgba(17,24,39,.92);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      display:none;
+      z-index: 60;
+      max-width: 92%;
+      text-align:center;
+    }
+    .toast.show{ display:block; }
+
+    /* hidden amounts */
+    .masked{ filter: blur(10px); user-select:none; }
 
     /* bottom nav */
     .bottom-nav{
@@ -390,7 +406,7 @@
       align-items:center;
       gap:6px;
       color:#6b7280;
-      font-weight: 650;
+      font-weight: 750;
       font-size: 11px;
       cursor:pointer;
       user-select:none;
@@ -410,38 +426,18 @@
       border-color: rgba(22,119,255,.35);
     }
 
-    /* small toast */
-    .toast{
-      position:absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 84px;
-      background: rgba(17,24,39,.92);
-      color:#fff;
-      padding: 10px 12px;
-      border-radius: 14px;
-      font-size: 13px;
-      display:none;
-      z-index: 60;
-      max-width: 92%;
-      text-align:center;
-    }
-    .toast.show{ display:block; }
-
-    /* hidden amounts state */
-    .masked{
-      filter: blur(10px);
-      user-select:none;
-    }
+    /* other views */
+    .mini-note{ color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.35; }
+    input, select, textarea{ font-family: inherit; }
   </style>
 </head>
 
 <body>
-  <div class="widget-shell" aria-label="Embedded widget frame">
+  <div class="widget-shell">
     <div class="widget" id="widgetRoot">
       <div class="topbar">
         <div class="left" onclick="openMenu()">
-          <span class="icon">⤴</span>
+          <span class="icon">≡</span>
         </div>
         <div class="topbar-title">Payslips</div>
         <div class="right" onclick="openHelp()">
@@ -449,65 +445,73 @@
         </div>
       </div>
 
+      <!-- Payslips -->
       <div class="content" id="viewPayslips">
         <div class="card">
           <div class="hide-toggle" onclick="toggleHide()">
             <div class="eye" id="eyeIcon">👁️</div>
-            <div class="hint" id="hideLabel">Tap to hide</div>
+            <div>
+              <div class="hint" id="hideLabel">Tap to hide</div>
+              <div class="mini-note">Walgreens Store Associate • Store #008</div>
+            </div>
           </div>
 
           <div class="chips" id="monthChips"></div>
 
           <div class="summary card" id="summaryCard" style="border:none; box-shadow:none; margin: 0 10px 10px;">
             <div class="label">Net Pay</div>
-            <div class="net" id="netPay">€ 7,326.12</div>
+            <div class="net" id="netPay">$ 0.00</div>
 
             <div class="subgrid">
               <div class="subcell">
                 <div class="k">Gross Pay</div>
-                <div class="v" id="grossPay">€ 7,430.00</div>
+                <div class="v" id="grossPay">$ 0.00</div>
               </div>
               <div class="subcell">
                 <div class="k">Deductions</div>
-                <div class="v" id="deductions">€ 2,179.09</div>
+                <div class="v" id="deductions">$ 0.00</div>
               </div>
             </div>
           </div>
         </div>
 
-        <h3 class="section">Payslips</h3>
+        <h3 class="section">Pay statements</h3>
         <div class="card list" id="payslipList"></div>
-
-        <div class="hintbox">
-          Demo widget: amounts and documents are simulated for click-through purposes. Actions (download/email/case) show realistic confirmations.
-        </div>
       </div>
 
-      <!-- VIEW: Simulation -->
+      <!-- Simulation -->
       <div class="content" id="viewSim" style="display:none;">
-        <h3 class="section" style="margin-top:6px;">Pay Simulation</h3>
+        <h3 class="section" style="margin-top:6px;">Pay simulation</h3>
         <div class="card p16">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-            <div style="font-weight:850;">What-if changes</div>
-            <span class="pill">Demo</span>
+            <div style="font-weight:950;">What-if changes</div>
+            <span class="pill">Biweekly</span>
           </div>
-
-          <div class="hintbox" style="margin-top:10px;">
-            Use this to simulate net pay impact before submitting a payroll change. In production, inputs come from SuccessFactors + payroll rules.
+          <div class="mini-note">
+            Estimate take-home pay impact before requesting payroll changes (overtime, one-time bonus, benefit contributions).
           </div>
 
           <div style="margin-top:14px;">
             <div class="kv">
               <div class="k">Overtime hours</div>
-              <div class="v"><input id="simOt" type="number" min="0" step="1" value="0" style="width:90px; padding:8px; border-radius:12px; border:1px solid var(--line);" /></div>
+              <div class="v">
+                <input id="simOt" type="number" min="0" step="1" value="0"
+                  style="width:90px; padding:8px; border-radius:12px; border:1px solid var(--line);" />
+              </div>
             </div>
             <div class="kv">
-              <div class="k">Bonus (€)</div>
-              <div class="v"><input id="simBonus" type="number" min="0" step="50" value="0" style="width:90px; padding:8px; border-radius:12px; border:1px solid var(--line);" /></div>
+              <div class="k">One-time bonus</div>
+              <div class="v">
+                <input id="simBonus" type="number" min="0" step="25" value="0"
+                  style="width:120px; padding:8px; border-radius:12px; border:1px solid var(--line);" />
+              </div>
             </div>
             <div class="kv">
-              <div class="k">401(k) / Pension %</div>
-              <div class="v"><input id="simPension" type="number" min="0" max="20" step="1" value="5" style="width:90px; padding:8px; border-radius:12px; border:1px solid var(--line);" /></div>
+              <div class="k">401(k) contribution %</div>
+              <div class="v">
+                <input id="simPension" type="number" min="0" max="20" step="1" value="4"
+                  style="width:90px; padding:8px; border-radius:12px; border:1px solid var(--line);" />
+              </div>
             </div>
           </div>
 
@@ -518,10 +522,10 @@
         </div>
 
         <div class="card p16" style="margin-top:12px;">
-          <div style="font-weight:850; margin-bottom:10px;">Estimated results</div>
-          <div class="kv"><div class="k">Estimated gross</div><div class="v" id="simGross">€ —</div></div>
-          <div class="kv"><div class="k">Estimated deductions</div><div class="v" id="simDed">€ —</div></div>
-          <div class="kv"><div class="k">Estimated net</div><div class="v" id="simNet">€ —</div></div>
+          <div style="font-weight:950; margin-bottom:10px;">Estimated results</div>
+          <div class="kv"><div class="k">Estimated gross</div><div class="v" id="simGross">$ —</div></div>
+          <div class="kv"><div class="k">Estimated deductions</div><div class="v" id="simDed">$ —</div></div>
+          <div class="kv"><div class="k">Estimated net</div><div class="v" id="simNet">$ —</div></div>
 
           <div class="actions" style="margin-top:12px;">
             <div class="btn primary" onclick="submitSimulation()">Submit change request</div>
@@ -530,25 +534,7 @@
         </div>
       </div>
 
-      <!-- VIEW: People (placeholder) -->
-      <div class="content" id="viewPeople" style="display:none;">
-        <h3 class="section" style="margin-top:6px;">People</h3>
-        <div class="card p16">
-          <div style="font-weight:850;">Directory (placeholder)</div>
-          <div class="hintbox" style="margin-top:10px;">This is here to match the bottom navigation pattern from the sample UI.</div>
-        </div>
-      </div>
-
-      <!-- VIEW: You (placeholder) -->
-      <div class="content" id="viewYou" style="display:none;">
-        <h3 class="section" style="margin-top:6px;">You</h3>
-        <div class="card p16">
-          <div style="font-weight:850;">Profile (placeholder)</div>
-          <div class="hintbox" style="margin-top:10px;">In production, this would deep-link to SuccessFactors profile and permissions.</div>
-        </div>
-      </div>
-
-      <!-- VIEW: Menu -->
+      <!-- Menu -->
       <div class="content" id="viewMenu" style="display:none;">
         <h3 class="section" style="margin-top:6px;">Menu</h3>
         <div class="card p16">
@@ -580,7 +566,7 @@
         </div>
       </div>
 
-      <!-- Sheet: Payslip details -->
+      <!-- Sheet: Payslip details (NO actual payslip content shown) -->
       <div class="sheet-backdrop" id="sheetPayslip">
         <div class="sheet">
           <div class="sheet-head">
@@ -594,50 +580,32 @@
             </div>
 
             <div class="card p14" style="margin-top:12px;">
-              <div class="kv"><div class="k">Net pay</div><div class="v" id="sNet">€ —</div></div>
-              <div class="kv"><div class="k">Gross pay</div><div class="v" id="sGross">€ —</div></div>
-              <div class="kv"><div class="k">Deductions</div><div class="v" id="sDed">€ —</div></div>
+              <div class="kv"><div class="k">Net pay</div><div class="v" id="sNet">$ —</div></div>
+              <div class="kv"><div class="k">Gross pay</div><div class="v" id="sGross">$ —</div></div>
+              <div class="kv"><div class="k">Deductions</div><div class="v" id="sDed">$ —</div></div>
               <div class="kv"><div class="k">Pay date</div><div class="v" id="sDate">—</div></div>
               <div class="kv"><div class="k">Pay group</div><div class="v" id="sGroup">US Biweekly</div></div>
             </div>
 
+            <div class="secure-preview">
+              <div class="secure-row">
+                <div class="secure-title">Pay statement (PDF)</div>
+                <div class="lock">🔒</div>
+              </div>
+              <div class="secure-note">
+                For privacy, the PDF contents aren’t displayed in this view. Use Download or Share to access the document securely.
+              </div>
+            </div>
+
             <div class="actions">
-              <div class="btn primary" onclick="downloadPdf()">Download PDF</div>
+              <div class="btn primary" onclick="downloadPdf()">Download</div>
+              <div class="btn ghost" onclick="sharePdf()">Share</div>
               <div class="btn ghost" onclick="emailPdf()">Email me</div>
-              <div class="btn ghost" onclick="openExplanation()">Explain my pay</div>
               <div class="btn danger" onclick="raiseCase()">Report an issue</div>
             </div>
 
-            <div class="hintbox">
-              In many SuccessFactors deployments, “View my pay statement” opens the latest statement and “Pay history” lists prior periods; this demo simulates both. [web:86]
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sheet: Explain my pay -->
-      <div class="sheet-backdrop" id="sheetExplain">
-        <div class="sheet">
-          <div class="sheet-head">
-            <div class="sheet-title">Explain my pay</div>
-            <div class="sheet-close" onclick="closeSheet('sheetExplain')">Close</div>
-          </div>
-          <div class="sheet-body">
-            <div class="card p16">
-              <div style="font-weight:850;">Highlights for this period</div>
-              <div class="hintbox" style="margin-top:10px;">
-                - Net pay changed due to deductions and one-time items.<br/>
-                - Tap a line item in production to see calculation details and source data (time, benefits, taxes).
-              </div>
-              <div style="margin-top:12px;">
-                <div class="kv"><div class="k">Top earnings</div><div class="v">Base + OT (simulated)</div></div>
-                <div class="kv"><div class="k">Top deductions</div><div class="v">Tax + Benefits (simulated)</div></div>
-                <div class="kv"><div class="k">Next best action</div><div class="v">Run a simulation</div></div>
-              </div>
-              <div class="actions" style="margin-top:12px;">
-                <div class="btn primary" onclick="openSimFromExplain()">Go to simulation</div>
-                <div class="btn danger" onclick="raiseCase()">Report an issue</div>
-              </div>
+            <div class="mini-note" style="margin-top:10px;">
+              This mirrors a common SuccessFactors pattern: view summary for the most recent pay statement and navigate pay history for prior periods. [web:86]
             </div>
           </div>
         </div>
@@ -652,32 +620,28 @@
           </div>
           <div class="sheet-body">
             <div class="card p16">
-              <div style="font-weight:850;">Create a case</div>
-              <div style="color:var(--muted); font-size:13px; margin-top:6px;">Simulated flow (no backend).</div>
+              <div style="font-weight:950;">Create a case</div>
+              <div class="mini-note">This will route to Payroll Support with the selected pay period.</div>
 
               <div style="margin-top:12px;">
-                <label style="font-weight:750; font-size:13px; color:#334155;">Category</label>
+                <label style="font-weight:850; font-size:13px; color:#334155;">Category</label>
                 <select id="caseCat" style="width:100%; margin-top:8px; padding:12px; border-radius:14px; border:1px solid var(--line); background:#fff;">
                   <option>Incorrect net pay</option>
                   <option>Missing overtime</option>
                   <option>Benefits deduction question</option>
                   <option>Tax withholding question</option>
-                  <option>Missing payslip / access issue</option>
+                  <option>Missing pay statement / access issue</option>
                 </select>
               </div>
 
               <div style="margin-top:12px;">
-                <label style="font-weight:750; font-size:13px; color:#334155;">Description</label>
+                <label style="font-weight:850; font-size:13px; color:#334155;">Description</label>
                 <textarea id="caseDesc" rows="4" style="width:100%; margin-top:8px; padding:12px; border-radius:14px; border:1px solid var(--line);"></textarea>
               </div>
 
               <div class="actions" style="margin-top:12px;">
                 <div class="btn ghost" onclick="attachMock()">Attach screenshot</div>
                 <div class="btn primary" onclick="submitCase()">Submit case</div>
-              </div>
-
-              <div class="hintbox">
-                For an embedded payroll widget, this maps cleanly to “deep link to SuccessFactors / ticketing” or “open in native HR help experience”. [web:90]
               </div>
             </div>
           </div>
@@ -689,41 +653,44 @@
   </div>
 
 <script>
-  // --- Demo data ---
+  // USD formatting
+  const USD = new Intl.NumberFormat("en-US", { style:"currency", currency:"USD" });
+
+  // Walgreens Store Associate, US biweekly examples (simulated values)
   const months = [
-    { key:"2025-07", label:"July 2025", net:7326.12, gross:7430.00, ded:2179.09 },
-    { key:"2025-06", label:"June 2025", net:1296.37, gross:1520.00, ded:223.63 },
-    { key:"2025-05", label:"May 2025", net:1312.44, gross:1550.00, ded:237.56 },
-    { key:"2025-04", label:"April 2025", net:1288.10, gross:1500.00, ded:211.90 }
+    { key:"2026-01", label:"Jan 2026", net: 1286.42, gross: 1600.00, ded: 313.58 },
+    { key:"2025-12", label:"Dec 2025", net: 1228.15, gross: 1520.00, ded: 291.85 },
+    { key:"2025-11", label:"Nov 2025", net: 1314.66, gross: 1664.00, ded: 349.34 },
+    { key:"2025-10", label:"Oct 2025", net: 1196.90, gross: 1488.00, ded: 291.10 }
   ];
 
   const payslipsByMonth = {
-    "2025-07": [
-      { id:"ps-2025-07-25", date:"25.07.2025", type:"Pay statement", net:1820.55, gross:1950.00, ded:129.45, payDate:"25 Jul 2025", status:"Final" },
-      { id:"ps-2025-07-11", date:"11.07.2025", type:"Pay statement", net:1755.57, gross:1850.00, ded:94.43, payDate:"11 Jul 2025", status:"Final" },
-      { id:"ps-2025-06-27", date:"27.06.2025", type:"Pay statement", net:3750.00, gross:3630.00, ded: -120.00, payDate:"27 Jun 2025", status:"Adjustment" }
+    "2026-01": [
+      { id:"ps-2026-01-24", date:"01/24/2026", type:"Pay statement", net: 642.21, gross: 800.00, ded: 157.79, payDate:"Jan 24, 2026", status:"Final" },
+      { id:"ps-2026-01-10", date:"01/10/2026", type:"Pay statement", net: 644.21, gross: 800.00, ded: 155.79, payDate:"Jan 10, 2026", status:"Final" }
     ],
-    "2025-06": [
-      { id:"ps-2025-06-25", date:"25.06.2025", type:"Pay statement", net:1296.37, gross:1520.00, ded:223.63, payDate:"25 Jun 2025", status:"Final" },
-      { id:"ps-2025-06-19", date:"19.06.2025", type:"Pay statement", net:1296.37, gross:1520.00, ded:223.63, payDate:"19 Jun 2025", status:"Final" }
+    "2025-12": [
+      { id:"ps-2025-12-27", date:"12/27/2025", type:"Pay statement", net: 614.07, gross: 760.00, ded: 145.93, payDate:"Dec 27, 2025", status:"Final" },
+      { id:"ps-2025-12-13", date:"12/13/2025", type:"Pay statement", net: 614.08, gross: 760.00, ded: 145.92, payDate:"Dec 13, 2025", status:"Final" }
     ],
-    "2025-05": [
-      { id:"ps-2025-05-24", date:"24.05.2025", type:"Pay statement", net:1312.44, gross:1550.00, ded:237.56, payDate:"24 May 2025", status:"Final" }
+    "2025-11": [
+      { id:"ps-2025-11-29", date:"11/29/2025", type:"Pay statement", net: 657.33, gross: 832.00, ded: 174.67, payDate:"Nov 29, 2025", status:"Final" },
+      { id:"ps-2025-11-15", date:"11/15/2025", type:"Pay statement", net: 657.33, gross: 832.00, ded: 174.67, payDate:"Nov 15, 2025", status:"Final" }
     ],
-    "2025-04": [
-      { id:"ps-2025-04-26", date:"26.04.2025", type:"Pay statement", net:1288.10, gross:1500.00, ded:211.90, payDate:"26 Apr 2025", status:"Final" }
+    "2025-10": [
+      { id:"ps-2025-10-18", date:"10/18/2025", type:"Pay statement", net: 598.45, gross: 744.00, ded: 145.55, payDate:"Oct 18, 2025", status:"Final" },
+      { id:"ps-2025-10-04", date:"10/04/2025", type:"Pay statement", net: 598.45, gross: 744.00, ded: 145.55, payDate:"Oct 4, 2025", status:"Final" }
     ]
   };
 
   let state = {
-    activeMonth: "2025-07",
+    activeMonth: "2026-01",
     hideAmounts: false,
     activePayslip: null,
     lastSim: null
   };
 
-  // --- Helpers ---
-  const € = new Intl.NumberFormat("de-DE", { style:"currency", currency:"EUR" });
+  function fmt(v){ return USD.format(v); }
 
   function showToast(msg){
     const t = document.getElementById("toast");
@@ -738,7 +705,6 @@
     else summary.classList.remove("masked");
   }
 
-  // --- Renderers ---
   function renderChips(){
     const root = document.getElementById("monthChips");
     root.innerHTML = "";
@@ -753,10 +719,9 @@
 
   function renderSummary(){
     const m = months.find(x=>x.key===state.activeMonth) || months[0];
-    document.getElementById("netPay").textContent = € .format(m.net).replace(/\u00a0/g,' ');
-    document.getElementById("grossPay").textContent = € .format(m.gross).replace(/\u00a0/g,' ');
-    document.getElementById("deductions").textContent = € .format(m.ded).replace(/\u00a0/g,' ');
-
+    document.getElementById("netPay").textContent = state.hideAmounts ? "•••••" : fmt(m.net);
+    document.getElementById("grossPay").textContent = state.hideAmounts ? "•••••" : fmt(m.gross);
+    document.getElementById("deductions").textContent = state.hideAmounts ? "•••••" : fmt(m.ded);
     setMasked(state.hideAmounts);
   }
 
@@ -765,7 +730,7 @@
     const items = payslipsByMonth[state.activeMonth] || [];
     list.innerHTML = "";
     if(items.length===0){
-      list.innerHTML = `<div class="p16" style="color:var(--muted);">No payslips found for this period.</div>`;
+      list.innerHTML = `<div class="p16" style="color:var(--muted);">No pay statements found.</div>`;
       return;
     }
     items.forEach((p, idx)=>{
@@ -779,16 +744,13 @@
           <div class="date">${p.date}</div>
           <div class="type">${p.type} • ${p.status}</div>
         </div>
-        <div class="amt">${state.hideAmounts ? "•••••" : € .format(p.net).replace(/\u00a0/g,' ')}</div>
+        <div class="amt">${state.hideAmounts ? "•••••" : fmt(p.net)}</div>
         <div class="chev">›</div>
       `;
-      // mimic the screenshot: first item has no top border rounding handled by CSS already
       list.appendChild(row);
       if(idx < items.length-1){
         const sep = document.createElement("div");
-        sep.style.height = "1px";
-        sep.style.background = "var(--line)";
-        sep.style.margin = "0 8px";
+        sep.className = "sep";
         list.appendChild(sep);
       }
     });
@@ -800,33 +762,6 @@
     renderList();
   }
 
-  // --- Navigation (bottom tabs) ---
-  function navTo(tab){
-    // active styles
-    ["Home","People","You","Payslips","Menu"].forEach(id=>{
-      document.getElementById("nav"+id).classList.remove("active");
-    });
-
-    // hide views
-    ["viewPayslips","viewSim","viewPeople","viewYou","viewMenu"].forEach(v=>{
-      document.getElementById(v).style.display = "none";
-    });
-
-    if(tab==="payslips"){ document.getElementById("navPayslips").classList.add("active"); document.getElementById("viewPayslips").style.display="block"; }
-    if(tab==="people"){ document.getElementById("navPeople").classList.add("active"); document.getElementById("viewPeople").style.display="block"; }
-    if(tab==="you"){ document.getElementById("navYou").classList.add("active"); document.getElementById("viewYou").style.display="block"; }
-    if(tab==="menu"){ document.getElementById("navMenu").classList.add("active"); document.getElementById("viewMenu").style.display="block"; }
-    if(tab==="home"){ document.getElementById("navHome").classList.add("active"); document.getElementById("viewPayslips").style.display="block"; showToast("Home (demo)"); document.getElementById("navPayslips").classList.add("active"); document.getElementById("navHome").classList.remove("active"); }
-  }
-
-  // --- Top bar actions ---
-  function openMenu(){ navTo("menu"); }
-  function openHelp(){
-    showToast("Help (demo)");
-    openSupport();
-  }
-
-  // --- Hide / show ---
   function toggleHide(){
     state.hideAmounts = !state.hideAmounts;
     document.getElementById("eyeIcon").textContent = state.hideAmounts ? "🙈" : "👁️";
@@ -835,147 +770,167 @@
     showToast(state.hideAmounts ? "Amounts hidden" : "Amounts shown");
   }
 
-  // --- Payslip detail sheet ---
-  function openSheet(id){
-    document.getElementById(id).classList.add("show");
+  // bottom nav
+  function navTo(tab){
+    ["Home","People","You","Payslips","Menu"].forEach(id=>{
+      document.getElementById("nav"+id).classList.remove("active");
+    });
+    ["viewPayslips","viewSim","viewMenu"].forEach(v=>{
+      document.getElementById(v).style.display = "none";
+    });
+
+    if(tab==="payslips"){
+      document.getElementById("navPayslips").classList.add("active");
+      document.getElementById("viewPayslips").style.display = "block";
+      return;
+    }
+    if(tab==="menu"){
+      document.getElementById("navMenu").classList.add("active");
+      document.getElementById("viewMenu").style.display = "block";
+      return;
+    }
+    if(tab==="home"){
+      // keep user on payslips for this widget; show toast
+      document.getElementById("navPayslips").classList.add("active");
+      document.getElementById("viewPayslips").style.display = "block";
+      showToast("Home (embedded)");
+      return;
+    }
+    // placeholders
+    document.getElementById("navPayslips").classList.add("active");
+    document.getElementById("viewPayslips").style.display = "block";
+    showToast("Not available in this widget");
   }
-  function closeSheet(id){
-    document.getElementById(id).classList.remove("show");
+
+  function openMenu(){ navTo("menu"); }
+  function openHelp(){
+    showToast("Help");
+    openSupport();
   }
+
+  // sheets
+  function openSheet(id){ document.getElementById(id).classList.add("show"); }
+  function closeSheet(id){ document.getElementById(id).classList.remove("show"); }
 
   function openPayslip(payslipId){
     const items = payslipsByMonth[state.activeMonth] || [];
     const p = items.find(x=>x.id===payslipId);
-    if(!p){ showToast("Payslip not found"); return; }
+    if(!p){ showToast("Pay statement not found"); return; }
     state.activePayslip = p;
 
+    const monthLabel = (months.find(m=>m.key===state.activeMonth) || months[0]).label;
+
     document.getElementById("sheetTitle").textContent = "Pay statement";
-    document.getElementById("sheetPeriod").textContent = "Period: " + months.find(m=>m.key===state.activeMonth).label;
+    document.getElementById("sheetPeriod").textContent = "Period: " + monthLabel;
     document.getElementById("sheetStatus").textContent = "Status: " + p.status;
 
-    document.getElementById("sNet").textContent   = state.hideAmounts ? "•••••" : € .format(p.net).replace(/\u00a0/g,' ');
-    document.getElementById("sGross").textContent = state.hideAmounts ? "•••••" : € .format(p.gross).replace(/\u00a0/g,' ');
-    document.getElementById("sDed").textContent   = state.hideAmounts ? "•••••" : € .format(p.ded).replace(/\u00a0/g,' ');
+    document.getElementById("sNet").textContent   = state.hideAmounts ? "•••••" : fmt(p.net);
+    document.getElementById("sGross").textContent = state.hideAmounts ? "•••••" : fmt(p.gross);
+    document.getElementById("sDed").textContent   = state.hideAmounts ? "•••••" : fmt(p.ded);
     document.getElementById("sDate").textContent  = p.payDate;
 
     openSheet("sheetPayslip");
   }
 
   function downloadPdf(){
-    showToast("Downloading PDF (demo)...");
-    setTimeout(()=>showToast("Saved to device (demo)"), 900);
+    showToast("Downloading pay statement…");
+    setTimeout(()=>showToast("Downloaded"), 900);
+  }
+  function sharePdf(){
+    showToast("Share sheet opened");
   }
   function emailPdf(){
-    showToast("Email sent (demo)");
+    showToast("Email sent");
   }
-  function openExplanation(){
-    closeSheet("sheetPayslip");
-    openSheet("sheetExplain");
-  }
+
   function raiseCase(){
     closeSheet("sheetPayslip");
-    closeSheet("sheetExplain");
     openSheet("sheetCase");
+    const monthLabel = (months.find(m=>m.key===state.activeMonth) || months[0]).label;
+    const p = state.activePayslip;
+    const seed = [
+      "Requesting help with my pay statement.",
+      "Pay period: " + monthLabel + (p ? (" • Pay date: " + p.payDate) : ""),
+      "Issue details:"
+    ].join("\n");
+    document.getElementById("caseDesc").value = seed;
   }
 
-  // --- Menu actions / other simulated features ---
+  // menu actions
   function openSim(){
-    navTo("payslips"); // keep context
     document.getElementById("viewPayslips").style.display = "none";
+    document.getElementById("viewMenu").style.display = "none";
     document.getElementById("viewSim").style.display = "block";
-    // bottom nav highlight: menu stays active but this is fine for demo; switch to menu for clarity
     ["Home","People","You","Payslips","Menu"].forEach(id=>document.getElementById("nav"+id).classList.remove("active"));
     document.getElementById("navMenu").classList.add("active");
-    showToast("Simulation (demo)");
   }
+  function openTaxDocs(){ showToast("Tax documents"); }
+  function openSupport(){ openSheet("sheetCase"); }
+  function openSettings(){ showToast("Privacy & security"); }
 
-  function openSimFromExplain(){
-    closeSheet("sheetExplain");
-    openSim();
-  }
-
-  function openTaxDocs(){
-    showToast("Tax documents (demo): W-2 / Year-end statements");
-  }
-  function openSupport(){
-    showToast("Support (demo): Payroll cases");
-    openSheet("sheetCase");
-  }
-  function openSettings(){
-    showToast("Privacy & security (demo)");
-  }
-
-  // --- Simulation logic (demo math) ---
+  // simulation logic
   function runSimulation(){
     const base = months.find(m=>m.key===state.activeMonth) || months[0];
     const ot = Number(document.getElementById("simOt").value || 0);
     const bonus = Number(document.getElementById("simBonus").value || 0);
-    const pensionPct = Number(document.getElementById("simPension").value || 0);
+    const pct = Number(document.getElementById("simPension").value || 0);
 
-    // Simple demo assumptions
-    const otRate = 32;                 // €/hour simulated
+    // assumptions for click-through realism (not payroll-accurate)
+    const otRate = 24;                    // $/hour
     const addGross = (ot * otRate) + bonus;
     const estGross = base.gross + addGross;
 
-    // Deductions: base deductions + pension on gross delta + simplified tax
-    const pension = estGross * (pensionPct/100);
-    const estDed = Math.max(0, base.ded + (addGross * 0.18) + (pension - (base.gross * (pensionPct/100))));
-    const estNet = estGross - estDed;
+    const est401k = estGross * (pct/100);
+    const estTaxes = (estGross - est401k) * 0.14;  // simplified withholding
+    const estOther = 52;                            // benefits etc.
+    const estDed = Math.max(0, estTaxes + est401k + estOther);
+    const estNet = Math.max(0, estGross - estDed);
 
     state.lastSim = { estGross, estDed, estNet };
 
-    document.getElementById("simGross").textContent = € .format(estGross).replace(/\u00a0/g,' ');
-    document.getElementById("simDed").textContent   = € .format(estDed).replace(/\u00a0/g,' ');
-    document.getElementById("simNet").textContent   = € .format(estNet).replace(/\u00a0/g,' ');
+    document.getElementById("simGross").textContent = fmt(estGross);
+    document.getElementById("simDed").textContent   = fmt(estDed);
+    document.getElementById("simNet").textContent   = fmt(estNet);
     showToast("Simulation updated");
   }
 
   function resetSimulation(){
     document.getElementById("simOt").value = 0;
     document.getElementById("simBonus").value = 0;
-    document.getElementById("simPension").value = 5;
+    document.getElementById("simPension").value = 4;
     state.lastSim = null;
-    document.getElementById("simGross").textContent = "€ —";
-    document.getElementById("simDed").textContent = "€ —";
-    document.getElementById("simNet").textContent = "€ —";
+    document.getElementById("simGross").textContent = "$ —";
+    document.getElementById("simDed").textContent = "$ —";
+    document.getElementById("simNet").textContent = "$ —";
     showToast("Reset");
   }
 
   function submitSimulation(){
     if(!state.lastSim){ showToast("Run simulation first"); return; }
-    showToast("Change request submitted (demo)");
+    showToast("Change request submitted");
   }
 
   function openCaseFromSim(){
     openSupport();
-    const desc = document.getElementById("caseDesc");
-    desc.value = "I ran a pay simulation and want payroll to validate the expected net pay impact before processing.\n\n(Attached: simulation inputs/results in production.)";
+    document.getElementById("caseCat").value = "Tax withholding question";
+    document.getElementById("caseDesc").value =
+      "I ran a pay simulation and have a question about deductions/withholding.\n\nPlease review my latest pay statement and confirm what will change.";
   }
 
-  function attachMock(){
-    showToast("Screenshot attached (demo)");
-  }
-
+  function attachMock(){ showToast("Attachment added"); }
   function submitCase(){
-    const cat = document.getElementById("caseCat").value;
     const desc = (document.getElementById("caseDesc").value || "").trim();
-    if(!desc){
-      showToast("Add a description");
-      return;
-    }
+    if(!desc){ showToast("Add a description"); return; }
     closeSheet("sheetCase");
-    showToast("Case submitted: " + cat);
+    showToast("Case submitted");
   }
 
-  // close sheets if backdrop clicked (but not when clicking inside sheet)
-  ["sheetPayslip","sheetExplain","sheetCase"].forEach(id=>{
+  // backdrop click to close
+  ["sheetPayslip","sheetCase"].forEach(id=>{
     const el = document.getElementById(id);
-    el.addEventListener("click", (e)=>{
-      if(e.target === el) closeSheet(id);
-    });
+    el.addEventListener("click", (e)=>{ if(e.target === el) closeSheet(id); });
   });
 
-  // init
   renderAll();
 </script>
 </body>
