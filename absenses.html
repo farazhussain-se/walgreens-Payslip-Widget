@@ -1,1 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Absences (Embedded) - SAP</title>
+  <style>
+    :root{
+      --sap:#0a6ed1;
+      --sap2:#0854a0;
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --good:#146c2e;
+      --warn:#b54708;
+      --danger:#b42318;
+      --shadow:0 10px 30px rgba(0,0,0,.10);
+      --radius:16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: linear-gradient(#eef3fb, #f7f7f9);
+      color:var(--text);
+      padding: 18px 10px;
+    }
+    .widget-shell{
+      width: 380px;
+      max-width: 96vw;
+      margin: 0 auto;
+      border-radius: 28px;
+      background: #d1d5db;
+      padding: 10px;
+      box-shadow: var(--shadow);
+    }
+    .widget{
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--bg);
+      min-height: 740px;
+      position: relative;
+    }
+
+    /* Top header (SAP-ish) */
+    .top{
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 14px 10px;
+    }
+    .topRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap: 10px;
+    }
+    .sapLogo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+    }
+    .sapMark{
+      width: 54px;
+      height: 26px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, var(--sap), #2b9af3);
+      color: #fff;
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      letter-spacing: 1px;
+      font-size: 14px;
+      box-shadow: 0 6px 14px rgba(10,110,209,.18);
+    }
+    .avatar{
+      width: 40px; height: 40px;
+      border-radius: 999px;
+      background: rgba(10,110,209,.12);
+      border: 1px solid rgba(10,110,209,.25);
+      color: var(--sap2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      cursor:pointer;
+      user-select:none;
+    }
+    .title{
+      margin-top: 6px;
+      font-size: 34px;
+      font-weight: 950;
+      letter-spacing: .2px;
+    }
+    .sub{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    /* Application tiles */
+    .sectionLabel{
+      margin: 14px 14px 8px;
+      color: #374151;
+      font-weight: 850;
+      letter-spacing: .2px;
+    }
+    .tile{
+      margin: 0 14px 12px;
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+      padding: 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tile:active{ background:#f8fafc; }
+    .tileLeft{
+      display:flex;
+      flex-direction:column;
+      gap: 4px;
+    }
+    .tileTitle{ font-weight: 950; }
+    .tileSub{ color: var(--muted); font-size: 13px; }
+    .tileIcon{
+      width: 44px; height: 44px;
+      border-radius: 999px;
+      background: rgba(10,110,209,.10);
+      border: 1px solid rgba(10,110,209,.20);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 20px;
+      color: var(--sap2);
+      flex: 0 0 auto;
+    }
+
+    /* Views */
+    .view{ display:none; padding-bottom: 18px; }
+    .view.active{ display:block; }
+
+    /* Cards inside Absences view */
+    .card{
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .p16{ padding:16px; }
+    .h3{
+      margin: 14px 14px 8px;
+      font-size: 16px;
+      font-weight: 950;
+      letter-spacing: .2px;
+    }
+
+    .chips{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding: 0 14px 10px;
+      scrollbar-width: none;
+    }
+    .chips::-webkit-scrollbar{ display:none; }
+    .chip{
+      padding: 9px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      white-space: nowrap;
+      cursor:pointer;
+      user-select:none;
+      font-weight: 850;
+      font-size: 13px;
+      color:#0f172a;
+    }
+    .chip.active{
+      background: rgba(10,110,209,.10);
+      border-color: rgba(10,110,209,.28);
+      color: var(--sap2);
+    }
+
+    .balances{
+      margin: 0 14px 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .bal{ padding: 14px; }
+    .balK{ color: var(--muted); font-weight: 850; font-size: 12px; }
+    .balV{ margin-top: 6px; font-weight: 950; font-family: var(--mono); }
+    .balSmall{ margin-top: 4px; color: var(--muted); font-size: 12px; }
+
+    .list{
+      margin: 0 14px 14px;
+      padding: 8px;
+    }
+    .item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .item:active{ background:#f8fafc; }
+    .meta{ flex:1; }
+    .metaT{ font-weight: 950; }
+    .metaS{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .status{
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 950;
+      border: 1px solid var(--line);
+      background:#fff;
+      flex: 0 0 auto;
+    }
+    .approved{ color: var(--good); border-color: rgba(20,108,46,.25); background: rgba(20,108,46,.08); }
+    .pending{ color: var(--warn); border-color: rgba(181,71,8,.25); background: rgba(181,71,8,.08); }
+    .cancelled{ color: var(--danger); border-color: rgba(180,35,24,.25); background: rgba(180,35,24,.08); }
+
+    .chev{
+      width: 28px; height: 28px;
+      border-radius: 10px;
+      display:flex; align-items:center; justify-content:center;
+      color:#6b7280;
+      background: #f3f4f6;
+      border: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+    .sep{ height:1px; background: var(--line); margin:0 8px; }
+
+    /* Form */
+    .form{
+      margin: 0 14px 14px;
+      padding: 14px;
+    }
+    .field{ margin-top: 12px; }
+    .label{ font-size: 13px; font-weight: 900; color:#334155; }
+    .input, .select, .ta{
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background:#fff;
+      font-size: 14px;
+    }
+    .ta{ min-height: 84px; resize: vertical; }
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+
+    .actions{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .btn{
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 12px 10px;
+      border-radius: 14px;
+      font-weight: 950;
+      cursor:pointer;
+      user-select:none;
+      text-align:center;
+    }
+    .btn.primary{
+      background: var(--sap);
+      border-color: rgba(10,110,209,.35);
+      color:#fff;
+    }
+    .btn.primary:active{ background: var(--sap2); }
+    .btn.ghost{ background: #f8fafc; }
+    .btn.danger{
+      background: #fff1f2;
+      border-color: #fecdd3;
+      color: var(--danger);
+    }
+    .note{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    /* Sheets */
+    .sheet-backdrop{
+      position:absolute;
+      left:0; top:0; right:0; bottom:0;
+      background: rgba(17,24,39,.36);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 12px;
+      z-index: 50;
+    }
+    .sheet-backdrop.show{ display:flex; }
+    .sheet{
+      width: 100%;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      max-height: 92%;
+    }
+    .sheet-head{
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+    }
+    .sheet-title{ font-weight: 950; letter-spacing:.2px; }
+    .sheet-close{
+      cursor:pointer;
+      user-select:none;
+      font-weight: 950;
+      color: #334155;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background:#fff;
+    }
+    .sheet-body{ padding: 14px; overflow:auto; }
+    .kv{
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .kv:last-child{ border-bottom:none; }
+    .kv .k{ color: var(--muted); font-weight: 850; }
+    .kv .v{ font-weight: 950; font-family: var(--mono); }
+
+    /* Toast */
+    .toast{
+      position:absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 18px;
+      background: rgba(17,24,39,.92);
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      display:none;
+      z-index: 60;
+      max-width: 92%;
+      text-align:center;
+    }
+    .toast.show{ display:block; }
+  </style>
+</head>
+
+<body>
+  <div class="widget-shell">
+    <div class="widget">
+
+      <!-- "SAP Applications" header -->
+      <div class="top" id="appsHeader">
+        <div class="topRow">
+          <div class="sapLogo"><div class="sapMark">SAP</div></div>
+          <div class="avatar" onclick="toast('Profile')">AK</div>
+        </div>
+        <div class="title">Applications</div>
+      </div>
+
+      <!-- VIEW: Applications -->
+      <div class="view active" id="viewApps">
+        <div class="sub" style="padding: 0 14px 6px;">
+          Walgreens Store Associate • Store #008 • My Time Management
+        </div>
+
+        <div class="sectionLabel">My Time Management</div>
+
+        <div class="tile" onclick="openAbsences()">
+          <div class="tileLeft">
+            <div class="tileTitle">My Absences</div>
+            <div class="tileSub">Time Off</div>
+          </div>
+          <div class="tileIcon">🗓️</div>
+        </div>
+
+        <div class="tile" onclick="toast('Timesheet')">
+          <div class="tileLeft">
+            <div class="tileTitle">My Timesheet</div>
+            <div class="tileSub">Timesheet</div>
+          </div>
+          <div class="tileIcon">🕒</div>
+        </div>
+
+        <div class="tile" onclick="toast('Leave Requests')">
+          <div class="tileLeft">
+            <div class="tileTitle">My Leave Requests</div>
+            <div class="tileSub">Leave Requests</div>
+          </div>
+          <div class="tileIcon">📨</div>
+        </div>
+
+        <div class="sectionLabel">Human Resource</div>
+
+        <div class="tile" onclick="toast('Employee Factsheet')">
+          <div class="tileLeft">
+            <div class="tileTitle">Employee Factsheet</div>
+            <div class="tileSub">Human Resource</div>
+          </div>
+          <div class="tileIcon">👤</div>
+        </div>
+
+        <div class="tile" onclick="toast('My Paystubs')">
+          <div class="tileLeft">
+            <div class="tileTitle">My Paystubs</div>
+            <div class="tileSub">Human Resource</div>
+          </div>
+          <div class="tileIcon">💵</div>
+        </div>
+
+        <div class="tile" onclick="toast('My Benefits')">
+          <div class="tileLeft">
+            <div class="tileTitle">My Benefits</div>
+            <div class="tileSub">Human Resource</div>
+          </div>
+          <div class="tileIcon">🧩</div>
+        </div>
+
+        <div class="sectionLabel">Interesting News</div>
+        <div class="sub" style="padding: 0 14px 22px;">
+          Content and announcements would appear here in the full SAP mobile experience.
+        </div>
+      </div>
+
+      <!-- VIEW: Absences -->
+      <div class="view" id="viewAbsences">
+        <div class="top" style="border-bottom:none; padding-bottom: 0;">
+          <div class="topRow">
+            <div class="sapLogo"><div class="sapMark">SAP</div></div>
+            <div class="avatar" onclick="toast('AK')">AK</div>
+          </div>
+          <div class="title" style="margin-top:8px;">Absences</div>
+          <div class="sub">
+            Request and manage time off. If you no longer need time off, you can cancel the request in Time Off. [web:111]
+          </div>
+        </div>
+
+        <div class="h3">Balances</div>
+        <div class="balances">
+          <div class="card bal">
+            <div class="balK">Vacation</div>
+            <div class="balV">24.0 hrs</div>
+            <div class="balSmall">Available</div>
+          </div>
+          <div class="card bal">
+            <div class="balK">Sick</div>
+            <div class="balV">12.0 hrs</div>
+            <div class="balSmall">Available</div>
+          </div>
+        </div>
+
+        <div class="h3">Upcoming</div>
+        <div class="card list" id="upcomingList"></div>
+
+        <div class="h3">Team calendar</div>
+        <div class="chips" id="weekChips"></div>
+        <div class="card p16" style="margin:0 14px 14px;">
+          <div style="font-weight:950;">This week</div>
+          <div class="note" id="teamAbsenceNote"></div>
+        </div>
+
+        <div class="h3">Request time off</div>
+        <div class="card form">
+          <div class="field">
+            <div class="label">Time type</div>
+            <select class="select" id="timeType">
+              <option value="Vacation">Vacation</option>
+              <option value="Sick">Sick</option>
+              <option value="Personal">Personal</option>
+              <option value="Jury Duty">Jury Duty</option>
+            </select>
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <div class="label">Start date</div>
+              <input class="input" id="startDate" type="date" value="2026-02-26" />
+            </div>
+            <div class="field">
+              <div class="label">End date</div>
+              <input class="input" id="endDate" type="date" value="2026-02-26" />
+            </div>
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <div class="label">Start time</div>
+              <select class="select" id="startTime">
+                <option>All day</option>
+                <option>08:00 AM</option>
+                <option>10:00 AM</option>
+                <option>02:00 PM</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="label">End time</div>
+              <select class="select" id="endTime">
+                <option>All day</option>
+                <option>12:00 PM</option>
+                <option>04:00 PM</option>
+                <option>10:00 PM</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="label">Notes</div>
+            <textarea class="ta" id="notes" placeholder="Optional note for your manager"></textarea>
+          </div>
+
+          <div class="actions">
+            <div class="btn ghost" onclick="resetRequest()">Reset</div>
+            <div class="btn primary" onclick="submitRequest()">Submit</div>
+          </div>
+
+          <div class="note">
+            In many deployments, the Time Off UI supports cancelling a request you no longer need. [web:111]
+          </div>
+        </div>
+      </div>
+
+      <!-- Sheet: Absence details -->
+      <div class="sheet-backdrop" id="sheetAbsence">
+        <div class="sheet">
+          <div class="sheet-head">
+            <div class="sheet-title" id="sheetTitle">Absence</div>
+            <div class="sheet-close" onclick="closeSheet('sheetAbsence')">Close</div>
+          </div>
+          <div class="sheet-body">
+            <div class="card p16">
+              <div class="kv"><div class="k">Type</div><div class="v" id="dType">—</div></div>
+              <div class="kv"><div class="k">Dates</div><div class="v" id="dDates">—</div></div>
+              <div class="kv"><div class="k">Duration</div><div class="v" id="dDur">—</div></div>
+              <div class="kv"><div class="k">Status</div><div class="v" id="dStatus">—</div></div>
+              <div class="kv"><div class="k">Approver</div><div class="v" id="dAppr">Store Manager</div></div>
+            </div>
+
+            <div class="actions">
+              <div class="btn ghost" onclick="toast('Edit request')">Edit</div>
+              <div class="btn danger" id="btnCancelAbs" onclick="cancelAbsence()">Cancel</div>
+            </div>
+
+            <div class="note">
+              SAP’s Time Off experience supports cancelling time off requests, typically via a cancel action on the request. [web:111][web:124]
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+
+    </div>
+  </div>
+
+<script>
+  // Data (click-through dummy)
+  const upcoming = [
+    { id:"a1", type:"Vacation", dates:"Feb 26, 2026", duration:"8.0 hrs", status:"Pending", approver:"Store Manager" },
+    { id:"a2", type:"Sick", dates:"Jan 14, 2026", duration:"4.0 hrs", status:"Approved", approver:"Store Manager" },
+    { id:"a3", type:"Personal", dates:"Dec 22, 2025", duration:"8.0 hrs", status:"Cancelled", approver:"Store Manager" }
+  ];
+
+  const teamWeeks = [
+    { key:"w1", label:"This week", note:"1 team member out (Vacation) • Friday: 1 coverage gap flagged." },
+    { key:"w2", label:"Next week", note:"2 team members out • Monday AM busiest coverage window." },
+    { key:"w3", label:"Mar 9", note:"No planned absences." }
+  ];
+
+  let state = {
+    view: "apps",
+    activeAbsence: null,
+    activeWeek: "w1"
+  };
+
+  function toast(msg){
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1600);
+  }
+
+  function showView(which){
+    document.getElementById("viewApps").classList.remove("active");
+    document.getElementById("viewAbsences").classList.remove("active");
+    if(which==="apps") document.getElementById("viewApps").classList.add("active");
+    if(which==="abs") document.getElementById("viewAbsences").classList.add("active");
+  }
+
+  function openAbsences(){
+    state.view = "abs";
+    showView("abs");
+    renderUpcoming();
+    renderWeeks();
+  }
+
+  function renderUpcoming(){
+    const root = document.getElementById("upcomingList");
+    root.innerHTML = "";
+    upcoming.forEach((a, idx)=>{
+      const row = document.createElement("div");
+      row.className = "item";
+      row.onclick = ()=> openAbsenceSheet(a.id);
+
+      let badgeClass = "pending";
+      if(a.status==="Approved") badgeClass = "approved";
+      if(a.status==="Cancelled") badgeClass = "cancelled";
+
+      row.innerHTML = `
+        <div class="meta">
+          <div class="metaT">${a.type}</div>
+          <div class="metaS">${a.dates} • ${a.duration}</div>
+        </div>
+        <div class="status ${badgeClass}">${a.status}</div>
+        <div class="chev">›</div>
+      `;
+      root.appendChild(row);
+      if(idx < upcoming.length-1){
+        const sep = document.createElement("div");
+        sep.className = "sep";
+        root.appendChild(sep);
+      }
+    });
+  }
+
+  function renderWeeks(){
+    const chips = document.getElementById("weekChips");
+    chips.innerHTML = "";
+    teamWeeks.forEach(w=>{
+      const c = document.createElement("div");
+      c.className = "chip" + (w.key===state.activeWeek ? " active" : "");
+      c.textContent = w.label;
+      c.onclick = ()=>{
+        state.activeWeek = w.key;
+        renderWeeks();
+      };
+      chips.appendChild(c);
+    });
+    const active = teamWeeks.find(x=>x.key===state.activeWeek) || teamWeeks[0];
+    document.getElementById("teamAbsenceNote").textContent = active.note;
+  }
+
+  // Sheet helpers
+  function openSheet(id){ document.getElementById(id).classList.add("show"); }
+  function closeSheet(id){ document.getElementById(id).classList.remove("show"); }
+
+  function openAbsenceSheet(absenceId){
+    const a = upcoming.find(x=>x.id===absenceId);
+    if(!a){ toast("Not found"); return; }
+    state.activeAbsence = a;
+
+    document.getElementById("dType").textContent = a.type;
+    document.getElementById("dDates").textContent = a.dates;
+    document.getElementById("dDur").textContent = a.duration;
+    document.getElementById("dStatus").textContent = a.status;
+    document.getElementById("dAppr").textContent = a.approver;
+
+    const btn = document.getElementById("btnCancelAbs");
+    if(a.status==="Cancelled"){
+      btn.textContent = "Cancelled";
+      btn.style.pointerEvents = "none";
+      btn.style.opacity = "0.6";
+    }else{
+      btn.textContent = "Cancel";
+      btn.style.pointerEvents = "auto";
+      btn.style.opacity = "1";
+    }
+    openSheet("sheetAbsence");
+  }
+
+  function cancelAbsence(){
+    const a = state.activeAbsence;
+    if(!a) return;
+
+    // emulate cancellation workflow: approved -> pending cancellation, pending -> cancelled
+    if(a.status==="Approved"){
+      a.status = "Pending";
+      toast("Cancellation submitted");
+    }else if(a.status==="Pending"){
+      a.status = "Cancelled";
+      toast("Request cancelled");
+    }else{
+      toast("No action");
+    }
+
+    closeSheet("sheetAbsence");
+    renderUpcoming();
+  }
+
+  function resetRequest(){
+    document.getElementById("timeType").value = "Vacation";
+    document.getElementById("startDate").value = "2026-02-26";
+    document.getElementById("endDate").value = "2026-02-26";
+    document.getElementById("startTime").value = "All day";
+    document.getElementById("endTime").value = "All day";
+    document.getElementById("notes").value = "";
+    toast("Reset");
+  }
+
+  function submitRequest(){
+    const type = document.getElementById("timeType").value;
+    const sd = document.getElementById("startDate").value;
+    const ed = document.getElementById("endDate").value;
+    if(!sd || !ed){
+      toast("Select start and end date");
+      return;
+    }
+
+    const display = new Date(sd + "T00:00:00");
+    const pretty = display.toLocaleDateString("en-US", { month:"short", day:"2-digit", year:"numeric" });
+
+    const newId = "a" + Math.floor(Math.random()*10000);
+    upcoming.unshift({
+      id: newId,
+      type,
+      dates: pretty + (sd !== ed ? " – " + new Date(ed+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"2-digit",year:"numeric"}) : ""),
+      duration: "8.0 hrs",
+      status: "Pending",
+      approver: "Store Manager"
+    });
+
+    toast("Request submitted");
+    renderUpcoming();
+  }
+
+  // Close sheet on backdrop click
+  const sheet = document.getElementById("sheetAbsence");
+  sheet.addEventListener("click", (e)=>{ if(e.target === sheet) closeSheet("sheetAbsence"); });
+
+  // Init content
+  renderUpcoming();
+  renderWeeks();
+</script>
+</body>
+</html>
 
